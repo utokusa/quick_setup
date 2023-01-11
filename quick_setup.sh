@@ -67,7 +67,7 @@ if [ "$FULL_INSTALL" == "YES" ]; then
   echo "Full install..."
   yes | unminimize
   apt install -y wget jq
-  apt install -y lsof inet-tools
+  apt install -y lsof net-tools
   apt install -y man-db manpages-dev manpages-posix-dev
 fi
 
