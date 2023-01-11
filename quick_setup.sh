@@ -1,9 +1,9 @@
 #!/bin/bash
 
+set -e
+
 function usage {
-    echo "Setup ubuntu environment"
-    echo ""
-    echo "usage: ./quick_setup.sh [-e | --email <email address>] [-u | --username <username>] [-g | --github-cli] [-f | --full-install]"
+    echo "Usage: ./quick_setup.sh [-e | --email <email address>] [-u | --username <username>] [-g | --github-cli] [-f | --full-install]"
 }
 
 # Parse arguments
@@ -27,6 +27,10 @@ while [[ $# -gt 0 ]]; do
     -f|--full-install)
       FULL_INSTALL=YES
       shift # past argument
+      ;;
+    -h|--help)
+	  usage
+      exit 0 
       ;;
     -*|--*)
       echo "Unknown option $2"
@@ -61,7 +65,10 @@ git config --global core.editor vim
 # ---- Full install
 if [ "$FULL_INSTALL" == "YES" ]; then
   echo "Full install..."
-  apt install -y wget
+  yes | unminimize
+  apt install -y wget jq
+  apt install -y lsof inet-tools
+  apt install -y man-db manpages-dev manpages-posix-dev
 fi
 
 # ---- Setup including interactive steps
