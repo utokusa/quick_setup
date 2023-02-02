@@ -44,10 +44,15 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+# ---- Handle sudo
+SUDO=""
+if [ "$EUID" != 0 ]; then
+	SUDO="sudo"
+fi
 
 # ---- Minimum setup
-apt update
-apt install -y git vim tmux curl
+$SUDO apt update
+$SUDO apt install -y git vim tmux curl
 
 cp ./configs/.tmux.conf ~/
 cp ./configs/.vimrc ~/
@@ -65,20 +70,22 @@ git config --global core.editor vim
 # ---- Full install
 if [ "$FULL_INSTALL" == "YES" ]; then
   echo "Full install..."
-  yes | unminimize
-  apt install -y wget jq
-  apt install -y lsof net-tools
-  apt install -y man-db manpages-dev manpages-posix-dev
+  if command -v unminimize &> /dev/null; then
+    yes | $SUDO unminimize
+  fi
+  $SUDO apt install -y wget jq
+  $SUDO apt install -y lsof net-tools
+  $SUDO apt install -y man-db manpages-dev manpages-posix-dev
 fi
 
 # ---- Setup including interactive steps
 if [ "$SETUP_GITHUB_CLI" == "YES" ] || [ "$FULL_INSTALL" == "YES" ]; then
   echo "Setting up GitHub CLI..."
-  type -p curl >/dev/null || apt install curl -y
-  curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
-  && chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
-  && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-  && apt update \
-  && apt install gh -y
+  type -p curl >/dev/null || $SUDO apt install curl -y
+  curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | $SUDO dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+  && $SUDO chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+  && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | $SUDO tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+  && $SUDO apt update \
+  && $SUDO apt install gh -y
   gh auth login
 fi
