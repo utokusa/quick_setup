@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -ex
 
 function usage {
     echo "Usage: ./quick_setup.sh [-e | --email <email address>] [-u | --username <username>] [-g | --github-cli] [-f | --full-install]"
@@ -75,7 +75,23 @@ if [ "$FULL_INSTALL" == "YES" ]; then
   fi
   $SUDO apt install -y wget jq
   $SUDO apt install -y lsof net-tools
+  # Install tzdata without prompt (It's a mand-db's dependency)
+  # https://stackoverflow.com/questions/44331836/apt-get-install-tzdata-noninteractive
+  $SUDO apt-get update
+  DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata
+
   $SUDO apt install -y man-db manpages-dev manpages-posix-dev
+
+  # Neovim
+  # https://github.com/neovim/neovim/wiki/Installing-Neovim#ubuntu
+  $SUDO apt-get install -y software-properties-common
+  $SUDO add-apt-repository -y ppa:neovim-ppa/unstable
+  $SUDO apt-get update
+  $SUDO apt-get install -y neovim
+  mkdir -p ~/.config/nvim
+  cp configs/.config/nvim/init.lua ~/.config/nvim/
+  # For LSP
+  $SUDO apt install -y luajit clang
 fi
 
 # ---- Setup including interactive steps
