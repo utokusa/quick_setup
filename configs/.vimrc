@@ -23,4 +23,5 @@ set colorcolumn=80
 set expandtab                                                               
 set term=screen-256color "For tmux   
 set clipboard=unnamedplus
-
+" Avoid slow Esc key
+set timeoutlen=10
