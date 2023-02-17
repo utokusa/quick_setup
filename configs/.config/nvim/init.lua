@@ -348,7 +348,6 @@ local servers = {
   -- rust_analyzer = {},
   -- tsserver = {},
 
-  -- lua_ls
   -- sumneko_lua
   lua_ls = {
     Lua = {

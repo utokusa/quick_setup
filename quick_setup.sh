@@ -78,7 +78,7 @@ if [ "$FULL_INSTALL" == "YES" ]; then
   # Install tzdata without prompt (It's a mand-db's dependency)
   # https://stackoverflow.com/questions/44331836/apt-get-install-tzdata-noninteractive
   $SUDO apt-get update
-  DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata
+  DEBIAN_FRONTEND=noninteractive $SUDO apt-get install -y tzdata
 
   $SUDO apt install -y man-db manpages-dev manpages-posix-dev
 
@@ -91,7 +91,7 @@ if [ "$FULL_INSTALL" == "YES" ]; then
   mkdir -p ~/.config/nvim
   cp configs/.config/nvim/init.lua ~/.config/nvim/
   # For LSP
-  $SUDO apt install -y luajit clang
+  $SUDO apt install -y luajit clang clangd
 fi
 
 # ---- Setup including interactive steps
