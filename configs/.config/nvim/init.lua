@@ -1,6 +1,6 @@
 --  
 -- For non English environment
--- vim.cmd('language en_US')
+-- vim.cmd [[language en_US]]
 
 -- -------------- kickstart.vim -------------- 
 -- Install packer
@@ -99,6 +99,17 @@ vim.api.nvim_create_autocmd('BufWritePost', {
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
+
+-- Indent
+local indent = 4
+vim.o.tabstop = indent
+vim.o.softtabstop = indent
+vim.o.shiftwidth = indent
+-- Force to use spaces instead of tab
+vim.o.expandtab = true
+vim.o.smarttab = true
+vim.o.autoindent = true
+vim.o.smartindent = true
 
 -- Set highlight on search
 vim.o.hlsearch = false
@@ -229,7 +240,10 @@ require('nvim-treesitter.configs').setup {
   ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'typescript', 'help', 'vim' },
 
   highlight = { enable = true },
-  indent = { enable = true, disable = { 'python' } },
+  indent = { enable = true, disable = {
+        'python',
+        'cpp', -- It doens't work as expected for my custom clang-format config
+    } },
   incremental_selection = {
     enable = true,
     keymaps = {
