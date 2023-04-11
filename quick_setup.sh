@@ -83,20 +83,20 @@ if [ "$FULL_INSTALL" == "YES" ]; then
   $SUDO apt install -y man-db manpages-dev manpages-posix-dev
 
   # Neovim
-	# Build neovim to use luaJIT version
-	CUR_DIR=$(pwd)
-	$SUDO apt install -y make cmake gettext libtool-bin pkg-config ninja-build
-	$SUDO apt install -y wget unzip tar gzip # also for mason.nvim
-	$SUDO apt install -y clang clangd # also for LSP
-	mkdir -p workspace && cd workspace
-	if ! [ -d "neovim" ]; then
-	git clone https://github.com/neovim/neovim
-	fi
-	cd neovim
-	git checkout v0.8.3
-	make CMAKE_BUILD_TYPE=RelWithDebInfo DEPS_CMAKE_FLAGS="-DCMAKE_BUILD_TYPE=Release"
-	$SUDO make install
-	cd $CUR_DIR
+  # Build neovim to use luaJIT version
+  CUR_DIR=$(pwd)
+  $SUDO apt install -y make cmake gettext libtool-bin pkg-config ninja-build
+  $SUDO apt install -y wget unzip tar gzip # also for mason.nvim
+  $SUDO apt install -y clang clangd # also for LSP
+  mkdir -p workspace && cd workspace
+  if ! [ -d "neovim" ]; then
+  git clone https://github.com/neovim/neovim
+  fi
+  cd neovim
+  git checkout v0.8.3
+  make CMAKE_BUILD_TYPE=RelWithDebInfo DEPS_CMAKE_FLAGS="-DCMAKE_BUILD_TYPE=Release"
+  $SUDO make install
+  cd $CUR_DIR
 
   mkdir -p ~/.config/nvim
   cp configs/.config/nvim/init.lua ~/.config/nvim/
