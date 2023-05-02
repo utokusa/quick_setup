@@ -2,7 +2,7 @@
 -- For non English environment
 -- vim.cmd [[language en_US]]
 
--- -------------- kickstart.vim -------------- 
+-- -------------- Based on kickstart.vim -------------- 
 -- Install packer
 local install_path = vim.fn.stdpath 'data' .. '/site/pack/packer/start/packer.nvim'
 local is_bootstrap = false
@@ -48,12 +48,15 @@ require('packer').startup(function(use)
     after = 'nvim-treesitter',
   }
 
+  use 'nvim-treesitter/nvim-treesitter-context'
+
   -- Git related plugins
   use 'tpope/vim-fugitive'
   use 'tpope/vim-rhubarb'
   use 'lewis6991/gitsigns.nvim'
 
-  use 'navarasu/onedark.nvim' -- Theme inspired by Atom
+  -- use 'lunarvim/lunar.nvim' -- colorscheme: 'lunar'
+  use 'folke/tokyonight.nvim' -- colorscheme: 'tokyonight'
   use 'nvim-lualine/lualine.nvim' -- Fancier statusline
   use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
   use 'numToStr/Comment.nvim' -- "gc" to comment visual regions/lines
@@ -97,6 +100,12 @@ vim.api.nvim_create_autocmd('BufWritePost', {
   pattern = vim.fn.expand '$MYVIMRC',
 })
 
+-- Tokyo Night setup
+-- It should be before setting colorscheme
+require("tokyonight").setup({
+  style = "night", -- The theme comes in three styles, `storm`, `moon`, a darker variant `night` and `day`
+})
+
 -- [[ Setting options ]]
 -- See `:help vim.o`
 
@@ -111,11 +120,19 @@ vim.o.smarttab = true
 vim.o.autoindent = true
 vim.o.smartindent = true
 
+-- Word wrap
+vim.o.wrap = false
+
 -- Set highlight on search
 vim.o.hlsearch = false
 
 -- Make line numbers default
 vim.wo.number = true
+
+-- Sync clipboard between OS and Neovim.
+--  Remove this option if you want your OS clipboard to remain independent.
+--  See `:help 'clipboard'`
+vim.o.clipboard = 'unnamedplus'
 
 -- Enable mouse mode
 vim.o.mouse = 'a'
@@ -136,7 +153,7 @@ vim.wo.signcolumn = 'yes'
 
 -- Set colorscheme
 vim.o.termguicolors = true
-vim.cmd [[colorscheme onedark]]
+vim.cmd [[colorscheme tokyonight]]
 
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
@@ -200,6 +217,10 @@ require('gitsigns').setup {
   },
 }
 
+vim.keymap.set('n', '<leader>ph', require('gitsigns').prev_hunk, { desc = '[P]revious [H]unk' })
+vim.keymap.set('n', '<leader>nh', require('gitsigns').next_hunk, { desc = '[N]ext [H]unk' })
+vim.keymap.set('n', '<leader>vh', require('gitsigns').preview_hunk, { desc = '[V]iew [H]unk' })
+
 -- [[ Configure Telescope ]]
 -- See `:help telescope` and `:help telescope.setup()`
 require('telescope').setup {
@@ -209,6 +230,18 @@ require('telescope').setup {
         ['<C-u>'] = false,
         ['<C-d>'] = false,
       },
+    },
+    -- Based on https://github.com/nvim-telescope/telescope.nvim/blob/942fe5faef47b21241e970551eba407bc10d9547/doc/telescope.txt#L540
+    -- Added '--hidden' to search dotfiles
+    vimgrep_arguments = {
+      'rg',
+      '--color=never',
+      '--no-heading',
+      '--with-filename',
+      '--line-number',
+      '--column',
+      '--smart-case',
+      '--hidden',
     },
   },
 }
@@ -358,7 +391,7 @@ end
 local servers = {
   -- clangd is suppored only outside mason.nvim
   -- https://github.com/williamboman/mason.nvim/issues/647#issuecomment-1421374526
-  -- clangd = {},
+  clangd = {},
   -- gopls = {},
   -- pyright = {},
   -- rust_analyzer = {},
@@ -416,7 +449,7 @@ cmp.setup {
   mapping = cmp.mapping.preset.insert {
     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-Space>'] = cmp.mapping.complete({}),
     ['<CR>'] = cmp.mapping.confirm {
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
@@ -448,3 +481,25 @@ cmp.setup {
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+
+-- Keymaps for built-in features
+vim.keymap.set('n', '<leader>fe', ':Explore<CR>', { desc = '[F]ile [E]xplorer' })
+
+-- -------------- Cheat sheet -------------- 
+-- 'tpope/vim-fugitive'
+--     - ':G': better version of `git status`
+--     - ':G' -> '-' on changed file: toggle stage/unstage
+--     - ':G' -> '=' on changed file: toggle show diff
+--     - ':Gdiffsplit' -> diff in split view
+-- 'numToStr/Comment.nvim'
+--     - gc  to line comment in visual mode
+--     - gcc to line comment in normal mode
+--     - gb  to block comment in visual mode
+--     - gbc to block comment in normal mode
+--     These are normal mapping for comment plugins
+--     e.g. https://github.com/tpope/vim-commentary
+--     Looks like 'g' originally comes from vim's `global` command
+--     because it is used in its implementation
+-- vim
+--     - 'hlsearch', 'hls': highlight for search
+--     - gf, gF: goto file. gF follows the line number. e.g. gF on 'fft.cpp:70' -> jump line 70 of fft.cpp
