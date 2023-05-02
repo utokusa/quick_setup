@@ -12,6 +12,7 @@ if [ "$1" == "" ]; then
   exit 1
 fi
 
+$SUDO apt update
 $SUDO apt install -y openssh-server
 
 SSH_PUB_KEY=$1
