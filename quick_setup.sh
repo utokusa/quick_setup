@@ -3,7 +3,7 @@
 set -ex
 
 function usage {
-    echo "Usage: ./quick_setup.sh [-e | --email <email address>] [-u | --username <username>] [-g | --github-cli] [-f | --full-install]"
+    echo "Usage: ./quick_setup.sh [-e | --email <email address>] [-u | --username <username>] [-g | --github-cli] [-f | --full-install] [--skip-interactive]"
 }
 
 # Parse arguments
@@ -26,6 +26,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     -f|--full-install)
       FULL_INSTALL=YES
+      shift # past argument
+      ;;
+    --skip-interactive)
+      SKIP_INTERACTIVE=YES
       shift # past argument
       ;;
     -h|--help)
@@ -115,5 +119,7 @@ if [ "$SETUP_GITHUB_CLI" == "YES" ] || [ "$FULL_INSTALL" == "YES" ]; then
   && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | $SUDO tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
   && $SUDO apt update \
   && $SUDO apt install gh -y
-  gh auth login
+  if [ "$SKIP_INTERACTIVE" != "YES" ]; then
+    gh auth login
+  fi
 fi
