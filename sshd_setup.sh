@@ -2,6 +2,8 @@
 
 # Usage: './sshd_setup.sh <ssh public key>'
 
+set -ex
+
 SUDO=""
 if [ "$EUID" != 0 ]; then
   SUDO="sudo"
@@ -19,7 +21,11 @@ SSH_PUB_KEY=$1
 mkdir -p $HOME/.ssh
 echo "$SSH_PUB_KEY" >> $HOME/.ssh/authorized_keys
 
-$SUDO service ssh restart
-
 echo "Make sure 'PubkeyAuthentication yes' is set in /etc/ssh/sshd_config"
+echo "Trying to set \`PubkeyAuthentication\`..."
+sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/g' /etc/ssh/sshd_config
+echo "Trying to grep \`PubkeyAuthentication\`..."
+cat /etc/ssh/sshd_config | grep Pubkey
+
+$SUDO service ssh restart
 
