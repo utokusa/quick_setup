@@ -47,20 +47,3 @@ function clean_up_tar {
 mkdir -p /opt/cni/bin
 tar Cxzvf "/opt/cni/bin" $CNI_TAR_FILE_NAME
 
-# [optional] install sonobuoy
-# https://sonobuoy.io/docs/main/
-
-SONOBUOY_VERSION="0.56.16"
-SONOBUOY_TAR_FILE_NAME="sonobuoy_${SONOBUOY_VERSION}_linux_amd64.tar.gz"
-
-curl -sLO "https://github.com/vmware-tanzu/sonobuoy/releases/download/v$SONOBUOY_VERSION/$SONOBUOY_TAR_FILE_NAME"
-function clean_up_tar {
-    rm "$TAR_FILE_NAME"
-    rm runc.amd64
-    rm $CNI_TAR_FILE_NAME
-    rm $SONOBUOY_TAR_FILE_NAME
-    rm LICENSE # from sonobuoy
-}
-
-tar -xvf $SONOBUOY_TAR_FILE_NAME
-mv sonobuoy /usr/local/bin
