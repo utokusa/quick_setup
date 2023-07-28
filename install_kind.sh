@@ -34,6 +34,10 @@ kubectl version --client
 # https://docs.docker.com/engine/install/ubuntu/
 
 curl -fsSL https://get.docker.com -o get-docker.sh
+function clean_up {
+    rm kubectl
+    rm get-docker.sh
+}
 $SUDO sh get-docker.sh
 
 # install kind
@@ -45,6 +49,7 @@ $SUDO sh get-docker.sh
 
 function clean_up {
     rm kubectl
+    rm get-docker.sh
     rm -f kind
 }
 
