@@ -56,7 +56,7 @@ fi
 
 # ---- Minimum setup
 $SUDO apt update
-$SUDO apt install -y git vim tmux curl
+$SUDO apt install -y git vim tmux curl bash-completion
 
 cp ./configs/.tmux.conf ~/
 cp ./configs/.vimrc ~/
