@@ -77,7 +77,7 @@ if [ "$FULL_INSTALL" == "YES" ]; then
   if command -v unminimize &> /dev/null; then
     yes | $SUDO unminimize
   fi
-  $SUDO apt install -y wget jq
+  $SUDO apt install -y wget jq ripgrep
   $SUDO apt install -y lsof net-tools
   # Install tzdata without prompt (It's a mand-db's dependency)
   # https://stackoverflow.com/questions/44331836/apt-get-install-tzdata-noninteractive
